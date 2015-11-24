@@ -1,0 +1,6 @@
+Release/
+local/
+Debug/
+UpgradeLog.*
+_UpgradeReport_Files/
+Animator.*
