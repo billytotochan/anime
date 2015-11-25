@@ -99,7 +99,8 @@ void BsplineCurveEvaluator::evaluateCurve(
 			float bezier_x = t*t*t * x_val[0] + t*t*x_val[1] + t*x_val[2] + x_val[3];
 			float bezier_y = t*t*t * y_val[0] + t*t*y_val[1] + t*y_val[2] + y_val[3];
 
-			
+			if (bezier_x < 0 || bezier_x > fAniLength)
+				continue;
 			Point curr_pt(bezier_x, bezier_y);
 			ptvEvaluatedCurvePts.push_back(curr_pt);
 			

@@ -72,6 +72,8 @@ void CatMullRomCurveEvaluator::evaluateCurve(
 			float cat_x = t*t*t * x_val[0] + t*t*x_val[1] + t*x_val[2] + x_val[3];
 			float cat_y = t*t*t * y_val[0] + t*t*y_val[1] + t*y_val[2] + y_val[3];
 
+			if (cat_x < 0 || cat_x > fAniLength)
+				continue;
 			Point curr_pt(cat_x, cat_y);
 			ptvEvaluatedCurvePts.push_back(curr_pt);
 		}
