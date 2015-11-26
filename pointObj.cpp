@@ -18,7 +18,7 @@ PointObj::PointObj(const PointObj& rhs) {
 }
 
 void PointObj::Draw(){
-	/*
+	
 	glDisable(GL_LIGHTING);
 	glDisable(GL_BLEND);
 
@@ -35,7 +35,7 @@ void PointObj::Draw(){
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_BLEND);
-	*/
+	
 }
 
 Particle* PointObj::Clone() const {
