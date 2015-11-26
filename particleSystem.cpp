@@ -91,7 +91,6 @@ void ParticleSystem::resetSimulation(float t)
 /** Compute forces and update particles **/
 void ParticleSystem::computeForcesAndUpdateParticles(float t)
 {
-
 	// TODO
 	if (simulate){
 		const float deltaT = 0.0025;
@@ -99,14 +98,14 @@ void ParticleSystem::computeForcesAndUpdateParticles(float t)
 			Vec3f force = Vec3f(0.0f, 0.0f, 0.0f);
 			Vec3f velocity = particle->getVelocity();
 			Vec3f position = particle->getPosition();
-			//for(auto &f : m_forces)
-			//force += f->getForce()*p->getMass();
+			for(auto &f : _Forces)
+				force += f->getForce()*particle->getMass();
 			velocity += force / particle->getMass() * deltaT;
 			position += velocity * deltaT;
 			particle->setVelocity(velocity);
 			particle->setPosition(position);
-			bakeParticles(deltaT);
 		}
+		bakeParticles(t);
 	}
 }
 

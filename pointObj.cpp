@@ -24,9 +24,8 @@ void PointObj::Draw(){
 
 	glPushMatrix();
 	setDiffuseColor(1, 1, 1);
-
+	//printf("%f %f %f \n",_Position[0], _Position[1], _Position[2]);
 	glPointSize(1.0f);
-
 	glBegin(GL_POINTS);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glVertex3f(_Position[0], _Position[1], _Position[2]);

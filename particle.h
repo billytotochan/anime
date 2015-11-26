@@ -6,14 +6,15 @@
 #include "vec.h"
 #include <memory>
 
+
 class Force {
 public:
 	Force();
 	~Force();
-	virtual Vec3f getForce();
+	virtual Vec3f getForce(){ return Vec3f(0.0f, 0.0f, 0.0f); }
+	//Vec3f getForce(){ return Vec3f(0.0f, 0.0f, 0.0f); }
 protected:
 };
-
 
 class Gravity : public Force {
 public:
@@ -21,13 +22,11 @@ public:
 	~Gravity();
 	void setGravity(float g){ _Gravity = g; }
 	Vec3f getForce(){ return Vec3f(0.0f, -_Gravity, 0.0f); }
-	//Vec3f getState(Particle* p) { return Vec3f(0.0f, -_Gravity, 0.0f); }
 protected:
 	float _Gravity;
 };
 
-class Wind :
-	public Force
+class Wind : public Force
 {
 public:
 	Wind();

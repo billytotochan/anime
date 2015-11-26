@@ -44,24 +44,6 @@ void SpawnParticles(Mat4f CameraTransforms)
 	return;
 
 }
-void AddParticleStartingAt(Vec4<float> WorldPoint) {
-	ParticleSystem* ps = ModelerApplication::Instance()->GetParticleSystem();
-	for (int i = 0; i < 100; i++) {
-
-		float mag = rand() % 10 / 10.0 + 0.2;
-		float theta = rand() % 360 / 57.3;
-		float yVelocity = rand() % 10 / 10.0 + 2;
-		float xVelocity = cos(theta) * mag;
-		float zVelocity = sin(theta) * mag * 3;
-		// printf("add: %f, %f, %f\n", WorldPoint[0], WorldPoint[1], WorldPoint[2]);
-		Vec3f position(WorldPoint[0], WorldPoint[1], WorldPoint[2]);
-		Vec3f velocity(xVelocity, 15, zVelocity);
-		Particle* p = new PointObj(1.0f, position, velocity);
-		// printf("added: %f, %f, %f\n", p->getPosition()[0], p->getPosition()[1], p->getPosition()[2]);
-
-		ps->addParticle(p);
-	}
-}
 
 // This is a list of the controls for the RobotArm
 // We'll use these constants to access the values 
@@ -69,8 +51,32 @@ void AddParticleStartingAt(Vec4<float> WorldPoint) {
 enum RobotArmControls
 { 
     BASE_ROTATION=0, LOWER_TILT, UPPER_TILT, CLAW_ROTATION,
-        BASE_LENGTH, LOWER_LENGTH, UPPER_LENGTH, PARTICLE_COUNT, NUMCONTROLS, 
+        BASE_LENGTH, LOWER_LENGTH, UPPER_LENGTH, PARTICLE_COUNT, 
+		X_WIND, Y_WIND, Z_WIND, WIND_MAGNITUDE, GRAVITY,
+		NUMCONTROLS, 
 };
+// We'll be getting the instance of the application a lot; 
+// might as well have it as a macro.
+#define VAL(x) (ModelerApplication::Instance()->GetControlValue(x))
+
+void AddParticleStartingAt(Vec4<float> WorldPoint) {
+	ParticleSystem* ps = ModelerApplication::Instance()->GetParticleSystem();
+	for (int i = 0; i < VAL(PARTICLE_COUNT) * 5 ; i++) {
+
+		float mag = rand() % 10 / 10.0 + 0.2;
+		float theta = rand() % 360 / 57.3;
+		float yVelocity = rand() % 10 / 10.0 + 2;
+		float xVelocity = cos(theta) * mag;
+		float zVelocity = sin(theta) * mag * 3;
+		printf("add: %f, %f, %f\n", WorldPoint[0], WorldPoint[1], WorldPoint[2]);
+		Vec3f position(WorldPoint[0], WorldPoint[1], WorldPoint[2]);
+		Vec3f velocity(xVelocity, 15, zVelocity);
+		Particle* p = new PointObj(1.0f, position, velocity);
+		printf("added: %f, %f, %f\n", p->getPosition()[0], p->getPosition()[1], p->getPosition()[2]);
+
+		ps->addParticle(p);
+	}
+}
 
 void ground(float h);
 void base(float h);
@@ -96,14 +102,6 @@ ModelerView* createRobotArm(int x, int y, int w, int h, char *label)
     return new RobotArm(x,y,w,h,label); 
 }
 
-// We'll be getting the instance of the application a lot; 
-// might as well have it as a macro.
-#define VAL(x) (ModelerApplication::Instance()->GetControlValue(x))
-
-
-
-
-
 // We are going to override (is that the right word?) the draw()
 // method of ModelerView to draw out RobotArm
 void RobotArm::draw()
@@ -122,9 +120,9 @@ void RobotArm::draw()
 
     // This call takes care of a lot of the nasty projection 
     // matrix stuff
-    ModelerView::draw();
-
-	static GLfloat lmodel_ambient[] = {0.4,0.4,0.4,1.0};
+	ModelerView::draw();
+	static GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
+	Mat4f temp = getModelViewMatrix();
 
 	// define the model
 
@@ -146,8 +144,9 @@ void RobotArm::draw()
 	upper_arm(h3);							// draw the upper arm
 
 	glTranslatef( 0.0, h3, 0.0 );
-	glRotatef( cr, 0.0, 0.0, 1.0 );
+	glRotatef(cr, 0.0, 0.0, 1.0);
 	claw(1.0);
+	SpawnParticles(temp);
 
 	//*** DON'T FORGET TO PUT THIS IN YOUR OWN CODE **/
 	endDraw();
@@ -246,7 +245,6 @@ void claw(float h) {
 	glVertex3d( 0.5,   h, -0.5);
 
 	glEnd();
-
 	glBegin( GL_QUADS );
 
 	glNormal3d( 1.0,  0.0,  0.0);	// +x side
@@ -317,23 +315,33 @@ int main()
 	controls[CLAW_ROTATION] = ModelerControl("claw rotation (cr)", -30.0, 180.0, 0.1, 0.0 );
     controls[BASE_LENGTH] = ModelerControl("base height (h1)", 0.5, 10.0, 0.1, 0.8 );
     controls[LOWER_LENGTH] = ModelerControl("lower arm length (h2)", 1, 10.0, 0.1, 3.0 );
-    controls[UPPER_LENGTH] = ModelerControl("upper arm length (h3)", 1, 10.0, 0.1, 2.5 );
-    controls[PARTICLE_COUNT] = ModelerControl("particle count (pc)", 0.0, 5.0, 0.1, 5.0 );
+	controls[UPPER_LENGTH] = ModelerControl("upper arm length (h3)", 1, 10.0, 0.1, 2.5);
+	controls[PARTICLE_COUNT] = ModelerControl("particle count (pc)", 0.0, 5.0, 0.1, 5.0);
+	controls[X_WIND] = ModelerControl("X_WIND", 0.0, 10.0, 0.1, 4.6);
+	controls[Y_WIND] = ModelerControl("Y_WIND", 0.0, 10.0, 0.1, 5.0);
+	controls[Z_WIND] = ModelerControl("Z_WIND", 0.0, 10.0, 0.1, 5.2);
+	controls[WIND_MAGNITUDE] = ModelerControl("WIND_MAGNITUDE", 0.0, 10.0, 0.1, 6.0);
+	controls[GRAVITY] = ModelerControl("GRAVITY", -10.0, 10.0, 1.0, -10.0);
     
 
 
 	// You should create a ParticleSystem object ps here and then
 	// call ModelerApplication::Instance()->SetParticleSystem(ps)
 	// to hook it up to the animator interface.
+
+	ModelerApplication::Instance()->Init(&createRobotArm, controls, NUMCONTROLS);
 	ParticleSystem *ps = new ParticleSystem();
 	ModelerApplication::Instance()->SetParticleSystem(ps);
-	Force* g = new Gravity(9.8f);
+	Force* g = new Gravity((float)-VAL(GRAVITY));
+	//Force* g = new Gravity(9.8f);
 	ps->addForce(g);
 	Wind *wind = new Wind();
-	wind->setDirection(Vec3f(-0.4, 0, 0.2));
-	wind->setMagnitube(6.0);
+	wind->setDirection(Vec3f((float)-VAL(X_WIND) - 5.0, (float)VAL(Y_WIND) - 5.0, (float)VAL(Y_WIND) - 5.0));
+	//wind->setDirection(Vec3f(-0.4, 0, 0.2));
+	wind->setMagnitube((float)VAL(WIND_MAGNITUDE));
+	//wind->setMagnitube(6.0);
 	ps->addForce(wind);
-    ModelerApplication::Instance()->Init(&createRobotArm, controls, NUMCONTROLS);
+	
 
     return ModelerApplication::Instance()->Run();
 }
