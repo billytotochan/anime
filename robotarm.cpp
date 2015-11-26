@@ -8,7 +8,9 @@
 #include "modelerapp.h"
 #include "modelerdraw.h"
 #include "particleSystem.h"
-
+#include "pointObj.h"
+#include "mat.h"
+#include "vec.h"
 
 #include <FL/gl.h>
 #include <stdlib.h>
@@ -19,8 +21,47 @@
 #define MAX_VEL 200
 #define MIN_STEP 0.1
 
+static Mat4f CameraMatrix;
+Mat4f getModelViewMatrix();
+void SpawnParticles(Mat4f CameraTransforms);
+void AddParticleStartingAt(Vec4<float> WorldPoint);
+Mat4f getModelViewMatrix(){
+	GLfloat m[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, m);
+	Mat4f matMV(m[0], m[1], m[2], m[3],
+		m[4], m[5], m[6], m[7],
+		m[8], m[9], m[10], m[11],
+		m[12], m[13], m[14], m[15]);
 
+	return matMV.transpose(); // convert to row major
+}
+void SpawnParticles(Mat4f CameraTransforms)
+{
 
+	Mat4f ModelTransforms = CameraTransforms.inverse() * getModelViewMatrix();
+	Vec4<float> WorldPoint = ModelTransforms * Vec4f(0, 0, 0, 1);
+	AddParticleStartingAt(WorldPoint);
+	return;
+
+}
+void AddParticleStartingAt(Vec4<float> WorldPoint) {
+	ParticleSystem* ps = ModelerApplication::Instance()->GetParticleSystem();
+	for (int i = 0; i < 100; i++) {
+
+		float mag = rand() % 10 / 10.0 + 0.2;
+		float theta = rand() % 360 / 57.3;
+		float yVelocity = rand() % 10 / 10.0 + 2;
+		float xVelocity = cos(theta) * mag;
+		float zVelocity = sin(theta) * mag * 3;
+		// printf("add: %f, %f, %f\n", WorldPoint[0], WorldPoint[1], WorldPoint[2]);
+		Vec3f position(WorldPoint[0], WorldPoint[1], WorldPoint[2]);
+		Vec3f velocity(xVelocity, 15, zVelocity);
+		Particle* p = new PointObj(1.0f, position, velocity);
+		// printf("added: %f, %f, %f\n", p->getPosition()[0], p->getPosition()[1], p->getPosition()[2]);
+
+		ps->addParticle(p);
+	}
+}
 
 // This is a list of the controls for the RobotArm
 // We'll use these constants to access the values 
@@ -284,7 +325,14 @@ int main()
 	// You should create a ParticleSystem object ps here and then
 	// call ModelerApplication::Instance()->SetParticleSystem(ps)
 	// to hook it up to the animator interface.
-
+	ParticleSystem *ps = new ParticleSystem();
+	ModelerApplication::Instance()->SetParticleSystem(ps);
+	Force* g = new Gravity(9.8f);
+	ps->addForce(g);
+	Wind *wind = new Wind();
+	wind->setDirection(Vec3f(-0.4, 0, 0.2));
+	wind->setMagnitube(6.0);
+	ps->addForce(wind);
     ModelerApplication::Instance()->Init(&createRobotArm, controls, NUMCONTROLS);
 
     return ModelerApplication::Instance()->Run();
