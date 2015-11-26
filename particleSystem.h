@@ -17,8 +17,9 @@
 #define __PARTICLE_SYSTEM_H__
 
 #include "vec.h"
-
-
+#include "particle.h"
+#include <vector>
+#include <map>
 
 class ParticleSystem {
 
@@ -72,7 +73,8 @@ public:
 	bool isDirty() { return dirty; }
 	void setDirty(bool d) { dirty = d; }
 
-
+	void addParticle(Particle* p) { _Particles.push_back(p); }
+	void addForce(Force* f){ _Forces.push_back(f); }
 
 protected:
 	
@@ -89,6 +91,9 @@ protected:
 	bool simulate;						// flag for simulation mode
 	bool dirty;							// flag for updating ui (don't worry about this)
 
+	vector<Particle*> _Particles;
+	vector<Force*> _Forces;
+	map<int, vector<Particle*>> _BakedParticles;
 };
 
 
