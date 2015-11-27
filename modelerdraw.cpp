@@ -1,4 +1,5 @@
 #include "modelerdraw.h"
+#include <math.h>
 #include <FL/gl.h>
 #include <GL/glu.h>
 #include <cstdio>
@@ -543,7 +544,7 @@ void drawPyramid(double size)
     {
         //drawTexture();
         //glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, mds->texture[0]);
+        //glBindTexture(GL_TEXTURE_2D, mds->texture[0]);
         glBegin(GL_TRIANGLES);           
             // Front
             glColor3f(1.0f, 0.0f, 0.0f);     
