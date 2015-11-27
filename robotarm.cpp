@@ -105,11 +105,11 @@ void AddParticleStartingAt(Vec4<float> WorldPoint) {
 		float yVelocity = rand() % 10 / 10.0 + 2;
 		float xVelocity = cos(theta) * mag;
 		float zVelocity = sin(theta) * mag * 3;
-		printf("add: %f, %f, %f\n", WorldPoint[0], WorldPoint[1], WorldPoint[2]);
+		//printf("add: %f, %f, %f\n", WorldPoint[0], WorldPoint[1], WorldPoint[2]);
 		Vec3f position(WorldPoint[0], WorldPoint[1], WorldPoint[2]);
-		Vec3f velocity(xVelocity, 15, zVelocity);
+		Vec3f velocity(xVelocity, 5, zVelocity);
 		Particle* p = new PointObj(1.0f, position, velocity);
-		printf("added: %f, %f, %f\n", p->getPosition()[0], p->getPosition()[1], p->getPosition()[2]);
+		//printf("added: %f, %f, %f\n", p->getPosition()[0], p->getPosition()[1], p->getPosition()[2]);
 
 		ps->addParticle(p);
 	}
@@ -349,7 +349,7 @@ void Ariou() {
 						glPushMatrix();
 						setDiffuseColor(COLOR_GREEN);
 						glTranslated(0, -0.5, 1);
-						SpawnParticles(temp);
+						//SpawnParticles(temp);
 						glPushMatrix();
 						glRotated(90, 1.0, 0.0, 0.0);
 						glPopMatrix();
@@ -554,10 +554,10 @@ int main()
     controls[LOWER_LENGTH] = ModelerControl("lower arm length (h2)", 1, 10.0, 0.1, 3.0 );
 	controls[UPPER_LENGTH] = ModelerControl("upper arm length (h3)", 1, 10.0, 0.1, 2.5);
 	controls[PARTICLE_COUNT] = ModelerControl("particle count (pc)", 0.0, 5.0, 0.1, 5.0);
-	controls[X_WIND] = ModelerControl("X_WIND", 0.0, 10.0, 0.1, 4.6);
-	controls[Y_WIND] = ModelerControl("Y_WIND", 0.0, 10.0, 0.1, 5.0);
-	controls[Z_WIND] = ModelerControl("Z_WIND", 0.0, 10.0, 0.1, 5.2);
-	controls[WIND_MAGNITUDE] = ModelerControl("WIND_MAGNITUDE", 0.0, 10.0, 0.1, 6.0);
+	controls[X_WIND] = ModelerControl("X_WIND", 0.0, 5.0, 0.1, 0.6);
+	controls[Y_WIND] = ModelerControl("Y_WIND", 0.0, 5.0, 0.1, 0.0);
+	controls[Z_WIND] = ModelerControl("Z_WIND", 0.0, 5.0, 0.1, 0.2);
+	controls[WIND_MAGNITUDE] = ModelerControl("WIND_MAGNITUDE", 0.0, 10.0, 0.1, 2.0);
 	controls[GRAVITY] = ModelerControl("GRAVITY", -10.0, 10.0, 1.0, 9.8);
     
     controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
@@ -609,11 +609,11 @@ int main()
 	ModelerApplication::Instance()->Init(&createRobotArm, controls, NUMCONTROLS);
 	ParticleSystem *ps = new ParticleSystem();
 	ModelerApplication::Instance()->SetParticleSystem(ps);
-	Force* g = new Gravity((float)-VAL(GRAVITY));
+	Force* g = new Gravity((float)VAL(GRAVITY));
 	//Force* g = new Gravity(9.8f);
 	ps->addForce(g);
 	Wind *wind = new Wind();
-	wind->setDirection(Vec3f((float)-VAL(X_WIND) - 5.0, (float)VAL(Y_WIND) - 5.0, (float)VAL(Y_WIND) - 5.0));
+	wind->setDirection(Vec3f((float)-VAL(X_WIND) - 5.0f, (float)VAL(Y_WIND) - 5.0f, (float)VAL(Y_WIND) - 5.0f));
 	//wind->setDirection(Vec3f(-0.4, 0, 0.2));
 	wind->setMagnitube((float)VAL(WIND_MAGNITUDE));
 	//wind->setMagnitube(6.0);
