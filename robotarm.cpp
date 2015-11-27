@@ -127,7 +127,7 @@ void RobotArm::draw()
 	// define the model
 
 	ground(-0.2);
-
+	//ariou();
 	base(0.8);
 
     glTranslatef( 0.0, 0.8, 0.0 );			// move to the top of the base
@@ -150,6 +150,192 @@ void RobotArm::draw()
 
 	//*** DON'T FORGET TO PUT THIS IN YOUR OWN CODE **/
 	endDraw();
+}
+
+void Ariou() {
+	Mat4f temp = getModelViewMatrix();
+	glPushMatrix();
+		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
+		glScaled(VAL(XSCALE), VAL(YSCALE), VAL(ZSCALE));
+		glRotated(VAL(ROTATE), 0, 1, 0);
+		setDiffuseColor(COLOR_YELLOW);
+
+		// Torus
+		if (VAL(DETAIL_LEVEL) > 1) {
+			glPushMatrix();
+				glTranslated(.0f, 6, .0f);
+				drawTorus(VAL(TORUS_R), VAL(TORUS_r));
+			glPopMatrix();
+		}
+		
+		//head
+		glPushMatrix();
+			glTranslated(0, VAL(LEG_LENGTH) + 0.05 + VAL(HEIGHT) + 0.05 + VAL(HEAD_SIZE), 0);
+			glRotated(VAL(HEAD_ROTATE), 0.0, 1.0, 0.0);
+			drawSphere(VAL(HEAD_SIZE));
+			if (VAL(DETAIL_LEVEL) > 2) {
+
+				// Nose
+				drawRoundCylinder(VAL(HEAD_SIZE) * 1.1, 0.2, 0.2);
+
+				// Ear
+				glPushMatrix();
+				glTranslated(0.9 / sqrt(0.9*0.9 + 1.1*1.1) * VAL(HEAD_SIZE), 1.1 / sqrt(0.9*0.9 + 1.1*1.1) * VAL(HEAD_SIZE), 0);
+				glRotated(-20, 0, 0, 1);
+				SpawnParticles(temp);
+				drawPyramid(VAL(EAR_SIZE));
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslated(-0.9 / sqrt(0.9*0.9 + 1.1*1.1) * VAL(HEAD_SIZE), 1.1 / sqrt(0.9*0.9 + 1.1*1.1) * VAL(HEAD_SIZE), 0);
+				glRotated(20, 0, 0, 1);
+				SpawnParticles(temp);
+				drawPyramid(VAL(EAR_SIZE));
+				glPopMatrix();
+				
+				// Eyes
+				glPushMatrix();
+				setDiffuseColor(COLOR_RED);
+				glTranslated(-0.5 / sqrt(0.5*0.5 * 2) * VAL(HEAD_SIZE) * 0.5, 0.5 / sqrt(0.5*0.5 * 2) * VAL(HEAD_SIZE) * 0.5, VAL(HEAD_SIZE) - 0.9);
+					drawRoundCylinder( 0.9, 0.2, 0.2);
+				glPopMatrix();
+				glPushMatrix();
+				setDiffuseColor(COLOR_RED);
+				glTranslated( 0.5 / sqrt(0.5*0.5 * 2) * VAL(HEAD_SIZE) * 0.5, 0.5 / sqrt(0.5*0.5 * 2) * VAL(HEAD_SIZE) * 0.5, VAL(HEAD_SIZE) - 0.9);
+					drawRoundCylinder( 0.9, 0.2, 0.2);
+				glPopMatrix();
+			}
+		glPopMatrix();
+
+		if (VAL(DETAIL_LEVEL) > 1) {
+			//body
+			// a.k.a. torso/trunk
+			glPushMatrix();
+			setDiffuseColor(COLOR_YELLOW);
+			glTranslated(0, 0.05 + VAL(LEG_LENGTH), 0);
+			glRotated(-90, 1.0, 0.0, 0.0);
+			drawRoundCylinder(VAL(HEIGHT), 0.7, 0.6);
+			glPushMatrix();
+			glTranslated(-0.8, 0, VAL(HEIGHT) - 0.4);
+			glRotated(90, 0, 1, 0);
+			// the shoulder
+			if (VAL(DETAIL_LEVEL) > 2) {
+				drawRoundCylinder(1.6, 0.2, 0.2);
+			}
+			glPopMatrix();
+
+			// the waist
+			if (VAL(DETAIL_LEVEL) > 3) {
+				glPushMatrix();
+				glTranslated(0, 0, 0.5);
+				glRotated(90, 1, 0, 0);
+				drawTorus(0.7, 0.08);
+				glPopMatrix();
+			}
+
+			glPopMatrix();
+
+			if (VAL(DETAIL_LEVEL) > 2) {
+				//right arm
+				glPushMatrix();
+				glTranslated(-0.7 - 0.20, VAL(LEG_LENGTH) + 0.05 + VAL(HEIGHT) * 0.9f, 0);
+				glTranslated(0.15, 0, 0);
+				glRotated(VAL(RIGHT_UPPER_ARM_ROTATE_X), 1.0, 0.0, 0.0);
+				glRotated(VAL(RIGHT_UPPER_ARM_ROTATE_Y), 0.0, 1.0, 0.0);
+				glTranslated(-0.15, 0, 0);
+				drawRoundCylinder(VAL(UPPER_ARM_LENGTH), 0.22, 0.15);
+
+				// lower arm
+				glTranslated(0, 0, VAL(UPPER_ARM_LENGTH) - 0.1);
+				glRotated(VAL(RIGHT_LOWER_ARM_ROTATE) - 180, 1, 0, 0);
+				drawRoundCylinder(VAL(LOWER_ARM_LENGTH), 0.15, 0.20);
+
+				// hand
+				glPushMatrix();
+				glTranslated(-0.03, -0.15, VAL(LOWER_ARM_LENGTH) - 0.1);
+				glRotated(VAL(RIGHT_HAND_ANGLE), 0, 1, 0);
+				drawCylinder(0.8, 0.15, 0.0001);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslated(0.03, -0.15, VAL(LOWER_ARM_LENGTH) - 0.1);
+				glRotated(-VAL(RIGHT_HAND_ANGLE), 0, 1, 0);
+				drawCylinder(0.8, 0.15, 0.0001);
+				glPopMatrix();
+
+				glPopMatrix();
+
+				//left arm
+				glPushMatrix();
+				glTranslated(0.7 + 0.20, VAL(LEG_LENGTH) + 0.05 + VAL(HEIGHT) * 0.9f, 0);
+				glTranslated(-0.15, 0, 0);
+				glRotated(VAL(LEFT_UPPER_ARM_ROTATE_X), 1.0, 0.0, 0.0);
+				glRotated(VAL(LEFT_UPPER_ARM_ROTATE_Y), 0.0, 1.0, 0.0);
+				glTranslated(0.15, 0, 0);
+				drawRoundCylinder(VAL(UPPER_ARM_LENGTH), 0.22, 0.15);
+
+				glTranslated(0, 0, VAL(UPPER_ARM_LENGTH) - 0.1);
+				glRotated(VAL(LEFT_LOWER_ARM_ROTATE) - 180, 1, 0, 0);
+				drawRoundCylinder(VAL(LOWER_ARM_LENGTH), 0.15, 0.20);
+
+				// hand
+				glPushMatrix();
+				glTranslated(-0.03, 0, VAL(LOWER_ARM_LENGTH) - 0.1);
+				glRotated(VAL(LEFT_HAND_ANGLE), 0, 1, 0);
+				drawBox(0.03, 0.25, 0.5);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslated(0.03, 0, VAL(LOWER_ARM_LENGTH) - 0.1);
+				glRotated(-VAL(LEFT_HAND_ANGLE), 0, 1, 0);
+				drawBox(0.03, 0.25, 0.5);
+				if (VAL(DETAIL_LEVEL) > 3) {
+					glRotated(90, 0, 0, 1);
+					drawCylinder(5, 0.02, 0.02);
+					if (VAL(DETAIL_LEVEL) > 4) {
+						glTranslated(0, 0, 4);
+
+						glPushMatrix();
+						setDiffuseColor(COLOR_GREEN);
+						glTranslated(0, -0.5, 1);
+						SpawnParticles(temp);
+						glPushMatrix();
+						glRotated(90, 1.0, 0.0, 0.0);
+						glPopMatrix();
+						glPopMatrix();
+					}
+				}
+				glPopMatrix();
+
+				glPopMatrix();
+			}
+
+			//right leg
+			glPushMatrix();
+			setDiffuseColor(COLOR_YELLOW);
+			glTranslated(-0.5, VAL(LEG_LENGTH), 0);
+			glRotated(VAL(RIGHT_LEG_ROTATE_X), 1.0, 0.0, 0.0);
+			glRotated(VAL(RIGHT_LEG_ROTATE_Y), 0.0, 1.0, 0.0);
+			drawRoundCylinder(VAL(LEG_LENGTH) - 0.15, 0.3, 0.4);
+			glTranslated(0, 0, VAL(LEG_LENGTH) * 0.85f);
+			glRotated(70, 1, 0, 0);
+			drawTorus(VAL(FEET_SIZE), VAL(FEET_SIZE) / 4);
+
+			glPopMatrix();
+
+			//left leg
+			glPushMatrix();
+			glTranslated(0.5, VAL(LEG_LENGTH), 0);
+			glRotated(VAL(LEFT_LEG_ROTATE_X), 1.0, 0.0, 0.0);
+			glRotated(VAL(LEFT_LEG_ROTATE_Y), 0.0, 1.0, 0.0);
+			drawRoundCylinder(VAL(LEG_LENGTH) - 0.15, 0.3, 0.4);
+			glTranslated(0, 0, VAL(LEG_LENGTH) * 0.85f);
+			glRotated(70, 1, 0, 0);
+			drawTorus(VAL(FEET_SIZE), VAL(FEET_SIZE) / 4);
+
+			glPopMatrix();
+		}
+	glPopMatrix();
 }
 
 void ground(float h) 

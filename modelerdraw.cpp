@@ -296,7 +296,16 @@ void drawTextureBox( double x, double y, double z )
 {
     // NOT IMPLEMENTED, SORRY (ehsu)
 }
-
+void drawRoundCylinder(double h, double r1, double r2)
+{
+    glPushMatrix();
+    glTranslated(0, 0, r1);
+    drawSphere(r1);
+    if (h - r1 - r2 > 0) drawCylinder(h - r1 - r2, r1, r2);
+    glTranslated(0, 0, h - r1 - r2);
+    drawSphere(r2);
+    glPopMatrix();
+}
 void drawCylinder( double h, double r1, double r2 )
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
@@ -412,5 +421,159 @@ void drawTriangle( double x1, double y1, double z1,
         glVertex3d( x2, y2, z2 );
         glVertex3d( x3, y3, z3 );
         glEnd();
+    }
+}
+void drawSierpinskiTriangle(double x1, double y1, double z1,
+    double x2, double y2, double z2,
+    double x3, double y3, double z3, int depth)
+{
+    if (depth == 0)
+    {
+        drawTriangle(x1, y1, z1,
+            x2, y2, z2,
+            x3, y3, z3);
+    }
+    else
+    {
+        drawSierpinskiTriangle(x1, y1, z1,
+            (x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2,
+            (x3 + x1) / 2, (y3 + y1) / 2, (z3 + z1) / 2, depth - 1);
+
+        drawSierpinskiTriangle((x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2,
+            x2, y2, z2,
+            (x2 + x3) / 2, (y2 + y3) / 2, (z2 + z3) / 2, depth - 1);
+
+        drawSierpinskiTriangle((x3 + x1) / 2, (y3 + y1) / 2, (z3 + z1) / 2,
+            (x2 + x3) / 2, (y2 + y3) / 2, (z2 + z3) / 2,
+            x3, y3, z3, depth - 1);
+    }
+}
+
+void drawTorus(double R, double r)
+{
+    ModelerDrawState *mds = ModelerDrawState::Instance();
+
+    _setupOpenGl();
+
+    if (mds->m_rayFile)
+    {
+        _dump_current_modelview();
+        fprintf(mds->m_rayFile,
+            "WTF");
+        _dump_current_material();
+        fprintf(mds->m_rayFile, "})))\n");
+    }
+    else
+    {
+        /* remember which matrix mode OpenGL was in. */
+        int savemode;
+        glGetIntegerv(GL_MATRIX_MODE, &savemode);
+
+        /* switch to the model matrix and scale by x,y,z. */
+        int n;
+
+        switch (mds->m_quality)
+        {
+        case HIGH:
+            n = 32; break;
+        case MEDIUM:
+            n = 20; break;
+        case LOW:
+            n = 12; break;
+        case POOR:
+            n = 8; break;
+        }
+
+        int N = 2 * n;
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glPushAttrib(GL_CURRENT_BIT);
+
+        for (int j = 0; j < N; j++)
+        {
+            glRotated(360.0f / N, 0, 1, 0);
+            float next_Cos = cos(2 * M_PI * (0 + 1) / N);
+            float next_Sin = sin(2 * M_PI * (0 + 1) / N);
+
+            glBindTexture(GL_TEXTURE_2D, 1);
+            glBegin(GL_TRIANGLE_STRIP);
+
+            for (int i = 0; i < n + 1; i++)
+            {
+                float Sin = sin(2 * M_PI * i / n);
+                float Cos = cos(2 * M_PI * i / n);
+                glNormal3d(Cos, Sin, 0);
+                glTexCoord2f(0.0f, 1.0f * i / n);
+                glVertex3d(R + Cos * r, Sin * r, 0);
+
+                glNormal3d(Cos * next_Cos, Sin, Cos * next_Sin);
+                glTexCoord2f(1.0f, 1.0f * i / n);
+                glVertex3d(next_Cos * R + Cos * r * next_Cos, Sin * r, next_Sin * R + Cos * r * next_Sin);
+            }
+
+            glEnd();
+        }
+
+        /* restore the model matrix stack, and switch back to the matrix
+        mode we were in. */
+        glPopMatrix();
+        glPopAttrib();
+        glMatrixMode(savemode);
+    }
+}
+
+void drawPyramid(double size)
+{
+    ModelerDrawState *mds = ModelerDrawState::Instance();
+
+    _setupOpenGl();
+
+    if (mds->m_rayFile)
+    {
+        _dump_current_modelview();
+        fprintf(mds->m_rayFile,
+            "WTF");
+        _dump_current_material();
+        fprintf(mds->m_rayFile, "})\n");
+    }
+    else
+    {
+        //drawTexture();
+        //glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, mds->texture[0]);
+        glBegin(GL_TRIANGLES);           
+            // Front
+            glColor3f(1.0f, 0.0f, 0.0f);     
+            glVertex3f(0.0f, 0.3f * size, 0.0f);
+            glColor3f(0.0f, 1.0f, 0.0f);     
+            glVertex3f(-0.3f, -0.3f, 0.1f);
+            glColor3f(0.0f, 0.0f, 1.0f);    
+            glVertex3f(0.3f, -0.3f, 0.1f);
+
+            // Right
+            glColor3f(1.0f, 0.0f, 0.0f);     
+            glVertex3f(0.0f, 0.3f * size, 0.0f);
+            glColor3f(0.0f, 0.0f, 1.0f);     
+            glVertex3f(0.3f, -0.3f, 0.1f);
+            glColor3f(0.0f, 1.0f, 0.0f);    
+            glVertex3f(0.3f, -0.3f, -0.1f);
+
+            // Back
+            glColor3f(1.0f, 0.0f, 0.0f);     
+            glVertex3f(0.0f, 0.3f * size, 0.0f);
+            glColor3f(0.0f, 1.0f, 0.0f);    
+            glVertex3f(0.3f, -0.3f, -0.1f);
+            glColor3f(0.0f, 0.0f, 1.0f);     
+            glVertex3f(-0.3f, -0.3f, -0.1f);
+
+            // Left
+            glColor3f(1.0f, 0.0f, 0.0f);      
+            glVertex3f(0.0f, 0.3f * size, 0.0f);
+            glColor3f(0.0f, 0.0f, 1.0f);      
+            glVertex3f(-0.3f, -0.3f, -0.1f);
+            glColor3f(0.0f, 1.0f, 0.0f);       
+            glVertex3f(-0.3f, -0.3f, 0.1f);
+        glEnd();   
+        //glDisable(GL_TEXTURE_2D);
     }
 }
