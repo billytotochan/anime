@@ -34,6 +34,8 @@ static Mat4f CameraMatrix;
 Mat4f getModelViewMatrix();
 void SpawnParticles(Mat4f CameraTransforms);
 void AddParticleStartingAt(Vec4<float> WorldPoint);
+void Ariou();
+
 Mat4f getModelViewMatrix(){
 	GLfloat m[16];
 	glGetFloatv(GL_MODELVIEW_MATRIX, m);
