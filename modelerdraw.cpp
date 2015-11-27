@@ -498,7 +498,7 @@ void drawTorus(double R, double r)
             float next_Cos = cos(2 * M_PI * (0 + 1) / N);
             float next_Sin = sin(2 * M_PI * (0 + 1) / N);
 
-            glBindTexture(GL_TEXTURE_2D, 1);
+            //glBindTexture(GL_TEXTURE_2D, 1);
             glBegin(GL_TRIANGLE_STRIP);
 
             for (int i = 0; i < n + 1; i++)
