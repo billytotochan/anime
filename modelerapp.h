@@ -64,7 +64,7 @@ public:
 
 	// Returns animating flag
 	bool Animating();
-
+	void Swing(int control, double delta);
 private:
 	// Private for singleton
 	ModelerApplication() : m_numControls(-1) { ps = 0; }

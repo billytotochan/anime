@@ -53,6 +53,30 @@ enum RobotArmControls
     BASE_ROTATION=0, LOWER_TILT, UPPER_TILT, CLAW_ROTATION,
         BASE_LENGTH, LOWER_LENGTH, UPPER_LENGTH, PARTICLE_COUNT, 
 		X_WIND, Y_WIND, Z_WIND, WIND_MAGNITUDE, GRAVITY,
+
+		XPOS, YPOS, ZPOS, HEIGHT, ROTATE, 
+		XSCALE, YSCALE, ZSCALE,
+		FLOOR_SIZE, FLOOR_DEPTH,
+
+		HEAD_SIZE, HEAD_ROTATE,
+		EAR_SIZE,
+
+		UPPER_ARM_LENGTH, 
+		LEFT_UPPER_ARM_ROTATE_X, LEFT_UPPER_ARM_ROTATE_Y,
+		RIGHT_UPPER_ARM_ROTATE_X, RIGHT_UPPER_ARM_ROTATE_Y,
+		LOWER_ARM_LENGTH, 
+		LEFT_LOWER_ARM_ROTATE, RIGHT_LOWER_ARM_ROTATE,
+		LEFT_HAND_ANGLE, RIGHT_HAND_ANGLE,
+		
+		LEG_LENGTH, 
+		LEFT_LEG_ROTATE_X, LEFT_LEG_ROTATE_Y,
+		RIGHT_LEG_ROTATE_X, RIGHT_LEG_ROTATE_Y,
+
+		FEET_SIZE,
+
+		TORUS_R, TORUS_r,
+
+		DETAIL_LEVEL,
 		NUMCONTROLS, 
 };
 // We'll be getting the instance of the application a lot; 
@@ -128,6 +152,7 @@ void RobotArm::draw()
 
 	ground(-0.2);
 	//ariou();
+	/**/
 	base(0.8);
 
     glTranslatef( 0.0, 0.8, 0.0 );			// move to the top of the base
@@ -147,6 +172,7 @@ void RobotArm::draw()
 	glRotatef(cr, 0.0, 0.0, 1.0);
 	claw(1.0);
 	SpawnParticles(temp);
+	/**/
 
 	//*** DON'T FORGET TO PUT THIS IN YOUR OWN CODE **/
 	endDraw();
@@ -154,6 +180,16 @@ void RobotArm::draw()
 
 void Ariou() {
 	Mat4f temp = getModelViewMatrix();
+	ModelerApplication::Instance()->Swing(LEFT_UPPER_ARM_ROTATE_X, 3.1);
+	//ModelerApplication::Instance()->Swing(LEFT_UPPER_ARM_ROTATE_Y, 2.5);
+
+	ModelerApplication::Instance()->Swing(HEAD_ROTATE, 1);
+
+	ModelerApplication::Instance()->Swing(RIGHT_UPPER_ARM_ROTATE_X, 1.1);
+	ModelerApplication::Instance()->Swing(RIGHT_UPPER_ARM_ROTATE_Y, 4.5);
+
+	ModelerApplication::Instance()->Swing(LEFT_LEG_ROTATE_X, 6.1);
+	ModelerApplication::Instance()->Swing(RIGHT_LEG_ROTATE_X, 6.1);
 	glPushMatrix();
 		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 		glScaled(VAL(XSCALE), VAL(YSCALE), VAL(ZSCALE));
@@ -509,6 +545,46 @@ int main()
 	controls[WIND_MAGNITUDE] = ModelerControl("WIND_MAGNITUDE", 0.0, 10.0, 0.1, 6.0);
 	controls[GRAVITY] = ModelerControl("GRAVITY", -10.0, 10.0, 1.0, 9.8);
     
+    controls[XPOS] = ModelerControl("X Position", -5, 5, 0.1f, 0);
+    controls[YPOS] = ModelerControl("Y Position", 0, 5, 0.1f, 0);
+    controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
+
+    controls[XSCALE] = ModelerControl("X Scale", 0, 3, 0.1f, 1.0f);
+    controls[YSCALE] = ModelerControl("Y Scale", 0, 3, 0.1f, 1.0f);
+    controls[ZSCALE] = ModelerControl("Z Scale", 0, 3, 0.1f, 1.0f);
+
+    controls[HEIGHT] = ModelerControl("Height", 1, 2.5, 0.1f, 1);
+    controls[ROTATE] = ModelerControl("Rotate", -135, 135, 1, 0);
+
+    controls[HEAD_SIZE] = ModelerControl("Head Size", 0.8, 2, 0.1f, 1);
+    controls[HEAD_ROTATE] = ModelerControl("Head Rotate", -70, 70, 1, 0);
+    controls[EAR_SIZE] = ModelerControl("Ear Size", 0, 2, 0.1f, 1);
+
+    controls[UPPER_ARM_LENGTH] = ModelerControl("Upper Arm Length", 1, 5, 0.1f, 0.8);
+    controls[LEFT_UPPER_ARM_ROTATE_X] = ModelerControl("Left Upper Arm Rotate X", 20, 120, 1.0f, 80);
+    controls[LEFT_UPPER_ARM_ROTATE_Y] = ModelerControl("Left Upper Arm Rotate Y", -30, 90, 1.0f, 0);
+    controls[RIGHT_UPPER_ARM_ROTATE_X] = ModelerControl("Right Upper Arm Rotate X", -90, 100, 1.0f, -40);
+    controls[RIGHT_UPPER_ARM_ROTATE_Y] = ModelerControl("Right Upper Arm Rotate Y", -90, 30, 1.0f, 0);
+
+    controls[LOWER_ARM_LENGTH] = ModelerControl("Lower Arm Length", 1, 5, 0.1f, 0.8);
+    controls[LEFT_LOWER_ARM_ROTATE] = ModelerControl("Left Lower Arm Rotate", 20, 180, 1.0f, 80);
+    controls[RIGHT_LOWER_ARM_ROTATE] = ModelerControl("Right Lower Arm Rotate", 20, 180, 1.0f, 180);
+    controls[RIGHT_HAND_ANGLE] = ModelerControl("Right Hand Angle", 0, 70, 1, 0);
+    controls[LEFT_HAND_ANGLE] = ModelerControl("Left Hand Angle", 0, 70, 1, 0);
+
+    controls[LEG_LENGTH] = ModelerControl("Leg Length", 1, 5, 0.1f, 2);
+    controls[LEFT_LEG_ROTATE_X] = ModelerControl("Left Leg Rotate X", 30, 150, 1.0f, 40);
+    controls[LEFT_LEG_ROTATE_Y] = ModelerControl("Left Leg Rotate Y", -80, 90, 1.0f, 0);
+    controls[RIGHT_LEG_ROTATE_X] = ModelerControl("Right Leg Rotate X", 30, 150, 1.0f, 140);
+    controls[RIGHT_LEG_ROTATE_Y] = ModelerControl("Right Leg Rotate Y", -90, 80, 1.0f, 0);
+    
+    controls[TORUS_R] = ModelerControl("Torus R", 0, 10, 0.1f, 0.6);
+    controls[TORUS_r] = ModelerControl("Torus r", 0, 10, 0.1f, 0.15);
+
+    controls[FLOOR_SIZE] = ModelerControl("Floor Size", 0, 8, 0.1f, 5.0f);
+    controls[FLOOR_DEPTH] = ModelerControl("Floor Depth", 0, 10, 1, 4);
+
+    controls[DETAIL_LEVEL] = ModelerControl("Detail Level", 1, 5, 1, 3);
 
 
 	// You should create a ParticleSystem object ps here and then

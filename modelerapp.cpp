@@ -211,3 +211,24 @@ void ModelerApplication::RedrawLoop(void*)
 	// 1/50 second update is good enough
 	Fl::add_timeout(0.025, ModelerApplication::RedrawLoop, NULL);
 }
+
+void ModelerApplication::Swing(int control, double delta)
+{
+	static bool direction[NUMCONTROLS] = {};
+	if (ModelerApplication::Instance()->m_animating)
+	{
+		double current = VAL(control);
+		current = (direction[control] ? current + delta : current - delta);
+		if (current >= MAX(control))
+		{
+			current = MAX(control);
+			direction[control] = 0;
+		}
+		if (current <= MIN(control))
+		{
+			current = MIN(control);
+			direction[control] = 1;
+		}
+		SETVAL(control, current);
+	}
+}
