@@ -20,6 +20,15 @@
 #define P_OFFSET 0.3f
 #define MAX_VEL 200
 #define MIN_STEP 0.1
+#define COLOR_RED		1.0f, 0.0f, 0.0f
+#define COLOR_GREEN		0.0f, 1.0f, 0.0f
+#define COLOR_BLUE		0.0f, 0.0f, 1.0f
+#define COLOR_MBLUE		0.34f, 0.6f, 0.79f
+#define COLOR_GREY		0.25f, 0.25f, 0.25f
+#define COLOR_WHITE     1.0f,1.0f,1.0f
+#define COLOR_BLACK     0.0f,0.0f,0.0f
+#define COLOR_DARK      0.17f,0.16f,0.18f
+#define COLOR_YELLOW    1.0f, 1.0f, 0.0f
 
 static Mat4f CameraMatrix;
 Mat4f getModelViewMatrix();
@@ -82,6 +91,8 @@ enum RobotArmControls
 // We'll be getting the instance of the application a lot; 
 // might as well have it as a macro.
 #define VAL(x) (ModelerApplication::Instance()->GetControlValue(x))
+#define MAX(x) (ModelerApplication::Instance()->GetMaxControlValue(x))
+#define MIN(x) (ModelerApplication::Instance()->GetMinControlValue(x))
 
 void AddParticleStartingAt(Vec4<float> WorldPoint) {
 	ParticleSystem* ps = ModelerApplication::Instance()->GetParticleSystem();
@@ -151,28 +162,30 @@ void RobotArm::draw()
 	// define the model
 
 	ground(-0.2);
-	//ariou();
-	/**/
-	base(0.8);
+	
+	if (false) {
+		ariou();
+	} else {
+		base(0.8);
 
-    glTranslatef( 0.0, 0.8, 0.0 );			// move to the top of the base
-    glRotatef( theta, 0.0, 1.0, 0.0 );		// turn the whole assembly around the y-axis. 
-	rotation_base(h1);						// draw the rotation base
+	    glTranslatef( 0.0, 0.8, 0.0 );			// move to the top of the base
+	    glRotatef( theta, 0.0, 1.0, 0.0 );		// turn the whole assembly around the y-axis. 
+		rotation_base(h1);						// draw the rotation base
 
-    glTranslatef( 0.0, h1, 0.0 );			// move to the top of the base
-    glRotatef( phi, 0.0, 0.0, 1.0 );		// rotate around the z-axis for the lower arm
-	glTranslatef( -0.1, 0.0, 0.4 );
-	lower_arm(h2);							// draw the lower arm
+	    glTranslatef( 0.0, h1, 0.0 );			// move to the top of the base
+	    glRotatef( phi, 0.0, 0.0, 1.0 );		// rotate around the z-axis for the lower arm
+		glTranslatef( -0.1, 0.0, 0.4 );
+		lower_arm(h2);							// draw the lower arm
 
-    glTranslatef( 0.0, h2, 0.0 );			// move to the top of the lower arm
-    glRotatef( psi, 0.0, 0.0, 1.0 );		// rotate  around z-axis for the upper arm
-	upper_arm(h3);							// draw the upper arm
+	    glTranslatef( 0.0, h2, 0.0 );			// move to the top of the lower arm
+	    glRotatef( psi, 0.0, 0.0, 1.0 );		// rotate  around z-axis for the upper arm
+		upper_arm(h3);							// draw the upper arm
 
-	glTranslatef( 0.0, h3, 0.0 );
-	glRotatef(cr, 0.0, 0.0, 1.0);
-	claw(1.0);
-	SpawnParticles(temp);
-	/**/
+		glTranslatef( 0.0, h3, 0.0 );
+		glRotatef(cr, 0.0, 0.0, 1.0);
+		claw(1.0);
+		SpawnParticles(temp);
+	}
 
 	//*** DON'T FORGET TO PUT THIS IN YOUR OWN CODE **/
 	endDraw();
