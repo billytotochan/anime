@@ -214,7 +214,7 @@ void ModelerApplication::RedrawLoop(void*)
 
 void ModelerApplication::Swing(int control, double delta)
 {
-	static bool direction[NUMCONTROLS] = {};
+	static bool direction[100] = {}; //45
 	if (ModelerApplication::Instance()->m_animating)
 	{
 		double current = GetControlValue(control);
