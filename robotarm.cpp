@@ -507,7 +507,7 @@ int main()
 	controls[Y_WIND] = ModelerControl("Y_WIND", 0.0, 10.0, 0.1, 5.0);
 	controls[Z_WIND] = ModelerControl("Z_WIND", 0.0, 10.0, 0.1, 5.2);
 	controls[WIND_MAGNITUDE] = ModelerControl("WIND_MAGNITUDE", 0.0, 10.0, 0.1, 6.0);
-	controls[GRAVITY] = ModelerControl("GRAVITY", -10.0, 10.0, 1.0, -10.0);
+	controls[GRAVITY] = ModelerControl("GRAVITY", -10.0, 10.0, 1.0, 9.8);
     
 
 
