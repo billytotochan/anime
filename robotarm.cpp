@@ -165,7 +165,7 @@ void RobotArm::draw()
 
 	ground(-0.2);
 	
-	if (false) {
+	if (true) {
 		Ariou();
 	} else {
 		base(0.8);

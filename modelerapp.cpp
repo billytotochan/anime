@@ -13,6 +13,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+#define NUMCONTROLS 10
+
 // CLASS ModelerControl METHODS
 
 ModelerControl::ModelerControl() : m_minimum(0.0f), m_maximum(1.0f), m_stepsize(0.1f), m_value(0.0f)

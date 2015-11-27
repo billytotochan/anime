@@ -50,8 +50,12 @@ public:
 
     // Get and set slider values.
     double GetControlValue(int controlNumber);
-	double GetMaxControlValue(int controlNumber) {return m_ui->controlValue(controlNumber)->maximum();}
-	double GetMinControlValue(int controlNumber) {return m_ui->controlValue(controlNumber)->minimum();}
+	double GetMaxControlValue(int controlNumber) {
+		return GetControlValue(controlNumber);
+	}//m_ui->controlValue(controlNumber)->maximum();}
+	double GetMinControlValue(int controlNumber) {
+		return GetControlValue(controlNumber);
+	}//return m_ui->controlValue(controlNumber)->minimum();}
     void   SetControlValue(int controlNumber, double value);
 
 	// Get and set particle system
